@@ -1,34 +1,16 @@
-node {
- 	// Clean workspace before doing anything
-    deleteDir()
-
-    try {
-        stage ('Clone') {
-        	checkout scm
+pipeline{
+    agent {
+        docker {label 'monitoring-1'
+                image 'bibinwilson/jenkins-slave:latest'
         }
-        stage ('Build') {
-        	sh "echo 'shell scripts to build project...'"
         }
-        stage ('Tests') {
-	        parallel 'static': {
-	            sh "echo 'shell scripts to run static tests...'"
-	        },
-	        'unit': {
-	            sh "echo 'shell scripts to run unit tests...'"
-	        },
-	        'integration': {
-	            sh "echo 'shell scripts to run integration tests...'"
-	        }
+    stages {
+        stage ('Run sample') {
+            
+            steps {
+                sh 'echo "hello world"'
+            }
         }
-      	stage ('Deploy') {
-            sh "echo 'shell scripts to deploy to server...'"
-      	}
-    } catch (err) {
-        currentBuild.result = 'FAILED'
-        throw err
+        
     }
 }
-
-
-
-
